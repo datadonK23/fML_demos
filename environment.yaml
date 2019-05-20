@@ -153,5 +153,3 @@ dependencies:
     - xerox==0.4.1
     - xgboost==0.82
     - zict==0.1.4
-prefix: /home/datadonk23/anaconda3/envs/fML
-
