@@ -49,7 +49,7 @@ Project Organization
     ├── README.md          <- The top-level README for developers using this project
     ├── ETHICS.md          <- Ethics checklist of project, generated with Deon
     │
-    ├── data			   <- Datasets 
+    ├── data		       <- Datasets 
     │
     ├── models             <- Trained and serialized models, model predictions, or model summaries
     │
