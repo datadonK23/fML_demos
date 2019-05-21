@@ -22,14 +22,17 @@ data_dir = os.path.join(root_path, "data")
 url = "https://data.consumerfinance.gov/api/views/s6ew-h6mp/rows.csv?accessType=DOWNLOAD"
 file_name = "Consumer_Complaints.csv"
 file_path = os.path.join(data_dir, file_name)
+test_file_path = os.path.join(data_dir, "test_" + file_name)
 
 try:
     logging.info("Start downloading complaints dataset")
     consumer_complaints = pd.read_csv(url, dtype=object)
     logging.info("Start persisting complaints dataset")
     consumer_complaints.to_csv(file_path, index=False)
+    logging.info("Sample and persisting complaints tests dataset")
+    test_sample = consumer_complaints.sample(50000, random_state=23)
+    test_sample.to_csv(test_file_path, index=False)
 except Exception as e:
     logging.error("Unable to make nlp_classif_complaints dataset. "
                   "Check for correct URL and path.",
                   exc_info=e)
-
