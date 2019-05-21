@@ -6,6 +6,8 @@ Date: 21.05.19
 """
 
 import unittest
+import unittest.mock
+from io import StringIO
 import os
 import numpy as np
 import pandas as pd
@@ -14,6 +16,7 @@ from utils.util_nlp_classif_complaints import load_data, clean_data, print_eval
 
 
 class TestDataLoading(unittest.TestCase):
+    """ Test data loading util method """
 
     def test_load_data(self):
         filepath = os.path.join("../data/", "test_Consumer_Complaints.csv")
@@ -40,6 +43,7 @@ class TestDataLoading(unittest.TestCase):
 
 
 class TestDataCleaning(unittest.TestCase):
+    """ Test data cleaning util method """
 
     def setUp(self) -> None:
         self.data = load_data(os.path.join("../data/",
@@ -63,6 +67,47 @@ class TestDataCleaning(unittest.TestCase):
         self.assertEqual(test_data.isna().sum().sum(), 0,
                          "NaN removal incorrect, still NaN's in cleaned DF")
 
+
+class TestEvalPrinting(unittest.TestCase):
+    """ Test evaluation metrices printing util method """
+
+    @unittest.mock.patch("sys.stdout", new_callable=StringIO)
+    def assert_stdout(self, pred, name, log, expected_output, mock_stdout):
+        print_eval(pred, name, log)
+        self.assertEqual(mock_stdout.getvalue(), expected_output)
+
+    def test_print_eval(self):
+        mock_pred = pd.DataFrame.from_dict({"input_time":
+            {0: pd.Timestamp("2018-01-01 00:00:00"),
+             1: pd.Timestamp('2018-01-02 00:00:00')},
+                                            "product":
+            {0: "Debt collection",
+             1: "Mortgage"},
+                                            "text":
+            {0: "Product is crap, of course",
+             1: "House burned, what else"},
+                                            "id":
+            {0: "0815",
+             1: "0816"},
+                                            "target":
+            {0: 0,
+             1: 1},
+                                            "prediction":
+            {0: 0.01,
+             1: 0.99}})
+        mock_name = "Test-Model"
+        mock_log = {"nlp_logistic_classification_learner": {
+            "parameters": {"test": "parameter"},
+            "running_time": "23.456 s"}}
+        expected_output = """Model: Test-Model
+Parameters {'test': 'parameter'}
+Precision 1.0
+Recall 1.0
+F1 Score 1.0
+Training time 23.456 s 
+
+"""
+        self.assert_stdout(mock_pred, mock_name, mock_log, expected_output)
 
 
 if __name__ == '__main__':
