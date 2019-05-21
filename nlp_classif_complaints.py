@@ -9,73 +9,19 @@ Modified from NLP Classification demo of fklearn.
 (https://fklearn.readthedocs.io/en/latest/examples/nlp_classification.html)
 
 Author: datadonk23
-Date: 17.05.19 
+Date: 21.05.19
 """
 
-import pandas as pd
-from fklearn.preprocessing.splitting import time_split_dataset
-from fklearn.training.classification import nlp_logistic_classification_learner
-from fklearn.validation.evaluators import precision_evaluator, \
-    recall_evaluator, fbeta_score_evaluator
 import os, logging
 logging.getLogger().setLevel(logging.INFO)
 
+from fklearn.preprocessing.splitting import time_split_dataset
+from fklearn.training.classification import nlp_logistic_classification_learner
+
+from utils.util_nlp_classif_complaints import load_data, clean_data, print_eval
+
 
 # Load and clean dataset
-def load_data(filepath):
-    """ Loads dataset into memory.
-
-    Parameters
-    ----------
-    filepath : str
-        Path to data file.
-
-    Returns
-    -------
-    data : pd.DataFrame
-        Raw dataset.
-
-    """
-
-    data = pd.read_csv(filepath, dtype=object,
-                       usecols=["Product", "Consumer complaint narrative",
-                                "Date received", "Complaint ID"],
-                       parse_dates=["Date received"])
-
-    return data
-
-
-def clean_data(df):
-    """ Cleans given dataframe.
-
-    Renames column names. Generates target column. Drops NaN's.
-
-    Parameters
-    ----------
-    df : pd.DataFrame
-        Raw dataset.
-
-    Returns
-    -------
-    cleaned_data : pd.DataFrame
-        Cleaned dataset.
-
-    """
-    data = df.rename(columns={"Product": "product",
-                              "Consumer complaint narrative": "text",
-                              "Date received": "input_time",
-                              "Complaint ID": "id"})
-
-    data["target"] = (
-            data["product"] ==
-            "Credit reporting, credit repair services, or other personal consumer reports"
-    ).astype(int)
-
-    cleaned_data = data.dropna()
-
-    return cleaned_data
-
-
 path = "data/"
 file = "Consumer_Complaints.csv"
 filepath = os.path.join(path, file)
@@ -124,24 +70,9 @@ logging.info("Finished model training")
 # Evaluation
 logging.info("Evaluating models")
 
-dev_pred = p_fn(dev)
 dev_pred_baseline = baseline_p_fn(dev)
+print_eval(dev_pred_baseline, "Baseline NLP logistic classification learner",
+           baseline_log)
 
-print("Baseline model:")
-print("Parameters", baseline_log["nlp_logistic_classification_learner"][
-    "parameters"])
-precision_baseline = precision_evaluator(dev_pred_baseline)
-print("Precision", precision_baseline["precision_evaluator__target"])
-recall_baseline = recall_evaluator(dev_pred_baseline)
-print("Recall", recall_baseline["recall_evaluator__target"])
-f1_score_baseline = fbeta_score_evaluator(dev_pred_baseline)
-print("F1 Score", f1_score_baseline["fbeta_evaluator__target"], "\n")
-
-print("Model:")
-print("Parameters", log["nlp_logistic_classification_learner"]["parameters"])
-precision = precision_evaluator(dev_pred)
-print("Precision", precision["precision_evaluator__target"])
-recall = recall_evaluator(dev_pred)
-print("Recall", recall["recall_evaluator__target"])
-f1_score = fbeta_score_evaluator(dev_pred)
-print("F1 Score", f1_score["fbeta_evaluator__target"])
+dev_pred = p_fn(dev)
+print_eval(dev_pred, "Tuned NLP logistic classification learner", log)

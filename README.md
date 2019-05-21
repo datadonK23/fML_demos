@@ -48,6 +48,7 @@ Project Organization
     ├── LICENSE
     ├── README.md          <- The top-level README for developers using this project
     ├── ETHICS.md          <- Ethics checklist of project, generated with Deon
+    ├── environment.yaml   <- Conda environment file to reproduce Python environment
     │
     ├── data		       <- Datasets 
     │
@@ -60,7 +61,9 @@ Project Organization
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │
-    ├── environment.yaml   <- Conda environment file to reproduce Python environment
+    ├── test             <- Test scripts directory
+    │
+    ├── utils             <- Scripts of utility methods for demos
     │
     ├── make_dataset.py             <- Downloads necessary datasets for demos
     ├── nlp_classif_complaints.py  	<- Binary classification of customer complaints demo
