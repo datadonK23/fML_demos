@@ -39,6 +39,31 @@ class TestDataLoading(unittest.TestCase):
                              "Incorrect column names in loaded DF")
 
 
+class TestDataCleaning(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.data = load_data(os.path.join("../data/",
+                                           "test_Consumer_Complaints.csv"))
+
+    def test_clean_data(self):
+        test_data = clean_data(self.data)
+
+        self.assertEqual(test_data.shape[1], 5,
+                         "Incorrect number of cols in cleaned DF, maybe "
+                         "target col not added")
+
+        self.assertEqual(test_data.target.dtype, np.int64,
+                         "Target col is not of type Int64")
+
+        columns = test_data.columns.to_list()
+        correct_colnames = ["input_time", "product", "text", "id", "target"]
+        self.assertListEqual(columns, correct_colnames,
+                             "Incorrect column names in cleaned DF")
+
+        self.assertEqual(test_data.isna().sum().sum(), 0,
+                         "NaN removal incorrect, still NaN's in cleaned DF")
+
+
 
 if __name__ == '__main__':
     unittest.main()
