@@ -61,9 +61,9 @@ Project Organization
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │
-    ├── test             <- Test scripts directory
+    ├── tests              <- Test scripts directory
     │
-    ├── utils             <- Scripts of utility methods for demos
+    ├── utils              <- Scripts of utility methods for demos
     │
     ├── make_dataset.py             <- Downloads necessary datasets for demos
     ├── nlp_classif_complaints.py  	<- Binary classification of customer complaints demo
